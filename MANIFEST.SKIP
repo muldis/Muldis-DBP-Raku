@@ -1,0 +1,10 @@
+^\.gitignore$
+^Makefile$
+^Makefile\.old$
+^MANIFEST\.bak$
+^pm_to_blib$
+^MYMETA.json$
+^MYMETA.yml$
+^\.git/
+^blib/
+\.DS_Store$

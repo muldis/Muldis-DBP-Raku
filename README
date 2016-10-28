@@ -1,0 +1,9 @@
+                        Muldis::DBI::Duck_Coupling
+                                  README
+---------------------------------------------------------------------------
+
+by Darren Duncan <darren@DarrenDuncan.net>
+
+This distribution features the pure documentation file named
+Muldis::DBI::Duck_Coupling (Formal spec of a duck-coupling database
+interface for Perl 6) and its support structure.
