@@ -1,0 +1,571 @@
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+Muldis::DBI::Duck_Coupling::API -
+Virtual Database Management System for Perl 6
+
+=head1 VERSION
+
+This document is Muldis::DBI::Duck_Coupling::API version 0.1.0.-9 for Perl 6.
+
+=head1 SYNOPSIS
+
+I<This documentation is pending.>
+
+=head1 DESCRIPTION
+
+Muldis::DBI::Duck_Coupling::API is the virtual reference implementation of
+the B<Muldis Duck Coupling DBI> (B<MDCDBI>) library API for Perl 6,
+authority C<http://muldis.com>, version number C<0.1.0.-9>.  It is also the
+main part of the human readable authoritative formal specification of the
+B<MDCDBI> library API itself.
+
+This document intentionally takes the form of API documentation for a
+concrete Perl 6 library named C<Muldis::DBI::Duck_Coupling::API>; however,
+no Perl 6 library with that name actually exists, and it never should
+exist; thus C<Muldis::DBI::Duck_Coupling::API> is a I<virtual> library.
+
+An actual concrete Perl 6 library that implements and is fully conformant
+to the B<Muldis Duck Coupling DBI> specification is one that provides an
+API that is a (possibly non-proper) superset of the API of the virtual
+library defined here.  And so, any applications or other libraries
+depending on the B<MDCDBI> should be fully portable between all such
+conforming libraries, at least with respect to what the API spec defines;
+furthermore, dependents should be able to programmatically discover to what
+degree the entire feature set and API of the implementing library is able
+to satisfy its needs and gracefully handle when they aren't met.
+
+I<This documentation is pending.>
+
+=head1 TERMINOLOGY
+
+There are some terms that this document uses which may have different
+meanings than what you may be used to, so here are a few notes to clarify
+what they mean in this document.
+
+=head2 value
+
+A I<value> is an individual constant that is not fixed in time or space.
+Every value is unique, eternal, and immutable; it has no address and can
+not be updated.  It does not make sense to say that you are creating or
+destroying or copying or mutating a I<value>, but it does make sense to say
+you are I<selecting> one.  So when one appears to be testing 2 values for
+equality, they are actually testing whether 2 value appearances are in fact
+the same value.  Every conceivable distinct concept can be represented by a
+value, whether it is a simple number or an arbitrarily complex collection.
+For every value there exists at least one I<selector> by means of which
+that value may manifest within a program; each selector takes the form of
+either a function or a value literal syntax.
+
+=head2 variable
+
+A I<variable> is a container for an appearance of a value.  It is neither
+unique nor eternal nor immutable in the typical case; it does have an
+address and in the typical case can be updated, meaning that over time a
+variable may hold appearances of different values.  A variable can be
+created, destroyed, copied, and mutated.  A variable's fundamental identity
+is its address, its identity does not vary with what value appears there.
+
+=head2 function
+
+A I<function> is a set of instructions for mapping a set of input values,
+its I<domain>, to a set of output values, its I<codomain>, in a pure and
+deterministic manner.  The I<result> value of a function call is determined
+entirely by its input I<source> value, and a function is guaranteed to give
+exactly the same single result value for every call with the same source
+value.  A I<function> is more constrained than a mathematical function
+(that it otherwise resembles) such that its input I<source> may only be a
+I<tuple> (a value of the C<Tuple> type) and not some other value.  This is
+for the purpose of avoiding unnecessary complications.
+
+=head2 procedure
+
+A I<procedure> is a set of instructions for either enacting possibly
+non-deterministic change over time in a set of variables or for reading
+from or writing to the external environment of the application, including
+its users or various external systems.  Any typical interaction with a DBMS
+by a Perl application would be mediated by at least one I<procedure>.
+
+=head2 data type
+
+A I<data type>, typically abbreviated I<type>, is fundamentally an
+unordered set (or just I<set>) of values, nothing more and nothing less.
+If and only if 2 sets of values are the same unordered set, they are the
+same type.  Analogous to how values are conceived, every type is unique,
+eternal, immutable, has no address and can not be updated.  Note that the
+concept of a I<type> as an unordered set of values is distinct from the
+concept of a I<value> which is an unordered set of values; no type I<is> a
+value, even though a set value is indeed isomorphic to a type.
+
+=head2 singleton type
+
+A I<singleton type> is a type that consists of exactly 1 value.
+
+=head2 supertype / subtype / disjoint / conjoined
+
+Take 2 arbitrary but not necessarily distinct data types, I<T1> and I<T2>.
+Iff the value set of I<T1> is a superset of that of I<T2>, then I<T1> is a
+I<supertype> of I<T2>, and I<T2> is a I<subtype> of I<T1>.  If additionally
+the 2 types are mutually distinct, meaning I<T1> has at least 1 value that
+I<T2> lacks, then I<T1> is additionally a I<proper supertype> of I<T2>, and
+I<T2> is additionally a I<proper subtype> of I<T1>.
+Iff 2 data types have no values in common, they are said to be I<disjoint>.
+Iff 2 data types have any values in common, they are said to be I<conjoined>.
+
+=head2 object
+
+An I<object> (unqualified) is a Perl 6 object; this concept does not exist
+inside a DBMS virtual machine in the general case spoken to by this
+document; this term is only used outside the DBMS, in regular Perl 6 space.
+
+=head2 class
+
+A I<class> (unqualified) is a Perl 6 class; this concept does not exist
+inside a DBMS virtual machine in the general case spoken to by this
+document; this term is only used outside the DBMS, in regular Perl 6 space.
+
+=head1 DATA TYPES
+
+The B<Muldis Duck Coupling DBI> (B<MDCDBI>) library API for Perl 6 formally
+defines a set of I<data types> that all I<values>, being either used within
+a DBMS or being passed between or shared by a DBMS and the main Perl
+environment, are members of.  They define the finer details of interchange,
+both for regular data and for source code, which is a kind of data.
+
+This specification avoids defining any relationship between these types,
+and officially leaves it up to each B<MDCDBI>-implementing library to
+define for itself whether any two given types are I<conjoined> (have any
+values in common) or I<disjoint> (have no values in common).  For example,
+some DBMSs may consider C<Integer> to be a I<subtype> of C<Fraction> (C<42>
+is a member of both) while others may consider the two types to be disjoint
+(C<42> and C<42.0> do not compare as equal).  The sole exceptions are that
+the C<Any> and C<None> types explicitly are a I<supertype> or I<subtype>
+respectively of every other type, regardless of the implementing library,
+for what that's worth.
+
+Each B<MDCDBI>-implementing library is not required to support every one of
+the types defined here; however, every I<value> that the library supports
+passing to/from the main Perl 6 environment must be losslessly represented
+using at least one of the types defined here, and that value must be
+losslessly round-trippable using all of those representations.  Note that
+the C<Capsule> type is the idiomatic way for a DBMS to represent "new"
+types in a consistent way.
+
+I<This list is subject to be expanded over time.>
+
+=head2 Any
+
+The C<Any> type is the I<universal type>, which is the maximal data type of
+the type system and consists of all values which can possibly exist.
+
+Perl 6 has a direct C<Any> analogy which is provided by the Perl 6
+class C<Any>.
+
+=head2 None
+
+The C<None> type is the I<empty type>, which is the minimal data type of
+the type system and consists of exactly zero values.
+
+=head2 Boolean
+
+A C<Boolean> value is a general purpose 2-valued logic boolean or I<truth
+value>, or specifically it is one of the 2 values I<false> and I<true>.
+
+Perl 6 has a direct C<Boolean> analogy which is provided by the Perl 6
+enumeration C<Bool>.
+
+=head2 Integer
+
+An C<Integer> value is a general purpose exact integral number of any
+magnitude, which explicitly does not represent any kind of thing in
+particular, neither cardinal nor ordinal nor nominal.  It has no minimum or
+maximum value.
+
+Perl 6 has a direct C<Integer> analogy which is provided by the Perl 6
+class C<Int>.
+
+=head2 Fraction
+
+A C<Fraction> value is a general purpose exact rational number of any
+magnitude and precision, expressible canonically as a coprime I<numerator>
+/ I<denominator> pair of C<Integer> whose I<denominator> is positive, which
+explicitly does not represent any kind of thing in particular, neither
+cardinal nor ordinal nor nominal.  It has no minimum or maximum value.
+
+Perl 6 has a direct C<Fraction> analogy which is provided by the Perl 6
+class C<FatRat>.
+
+=head2 (TODO: Other Numeric Types)
+
+I<TODO.>
+
+=head2 String
+
+A C<String> value is a general purpose integer string, which explicitly
+does not represent any kind of thing in particular, neither octets nor
+characters nor anything else, simply an arbitrarily-long ordered sequence
+of generic integers, where each integer is represented by an C<Integer>.
+
+Perl 6 has a direct C<String> analogy which is provided by the Perl 6 role
+class C<Blob>, or specifically by a composing class that uses a list of
+unlimited-magnitude integers, an immutable list being the best match.
+
+=head2 Bits
+
+A C<Bits> value is an arbitrarily-long sequence of I<bits> where each bit
+is represented by an C<Integer> in the range 0..1.
+
+Perl 6 has a direct C<Bits> analogy which is provided by the Perl 6 role
+class C<Blob>, or specifically by a composing class that uses a list of
+unsigned 1-bit integers, an immutable list being the best match.
+
+=head2 Blob
+
+A C<Blob> value is an arbitrarily-long sequence of I<octets> where each
+octet is represented by an C<Integer> in the range 0..255.
+
+Perl 6 has a direct C<Blob> analogy which is provided by the Perl 6 role
+class C<Blob>, or specifically by a composing class that uses a list of
+unsigned 8-bit integers, an immutable list being the best match.
+
+=head2 Text
+
+A C<Text> value is an arbitrarily-long sequence of abstract I<characters>
+where each character is a member of an infinite-size proprietary abstract
+character repertoire named I<maximal>, the latter in turn being formally a
+proper superset of the 0x10F7FF-character repertoire of Unicode, so for all
+practical purposes this is a Unicode character string.  A C<Text> value is
+canonically defined in terms of a sequence of C<Integer> where each of
+those represents a (typically Unicode) abstract character
+I<codepoint>, with each unique integer corresponding to a unique character.
+
+Perl 6 has a direct C<Text> analogy which is provided by the Perl 6
+class C<Str>.
+
+=head2 Array
+
+An C<Array> value is a general purpose arbitrarily-long ordered sequence of
+any other, I<member> values, which explicitly does not represent any kind
+of thing in particular, and is simply the sum of its members.  An C<Array>
+value is dense; iff it has any members, then its first-ordered member is at
+index position C<0>, and its last-indexed member is at the index position
+that is one less than the count of its members.  An C<Array> in the general
+case may have multiple members that are the same value, and any duplicates
+may or may not exist at consecutive indexes.
+
+Perl 6 has a direct C<Array> analogy which is provided by the Perl 6
+class C<List>.
+
+=head2 Set
+
+A C<Set> value is a general purpose arbitrarily-large unordered collection
+of any other, I<member> values, which explicitly does not represent any
+kind of thing in particular, and is simply the sum of its members.  A
+C<Set> ensures that no 2 of its members are the same value.
+
+Perl 6 has a direct C<Set> analogy which is provided by the Perl 6
+class C<Set>.
+
+=head2 Bag
+
+A C<Bag> value is a general purpose arbitrarily-large unordered collection
+of any other, I<member> values, which explicitly does not represent any
+kind of thing in particular, and is simply the sum of its members.  A
+C<Bag> in the general case may have multiple members that are the same
+value.
+
+Perl 6 has a direct C<Bag> analogy which is provided by the Perl 6
+class C<Bag>.
+
+=head2 Tuple
+
+A C<Tuple> value is a general purpose arbitrarily-large unordered
+heterogeneous collection of named I<attributes>, such that no 2 attributes
+have the same I<attribute name>, which explicitly does not represent any
+kind of thing in particular, and is simply the sum of its attributes.  An
+attribute is conceptually a name-asset pair, the name being used to look up
+the attribute in a C<Tuple>.  An I<attribute name> is an unqualified
+program identifier and is conceptually a character string that is not a
+C<Text> value.  In the general case each attribute of a tuple is of a
+distinct data type, though multiple attributes often have the same type.
+The set of attribute names of a C<Tuple> is called its I<heading>, and the
+corresponding attribute assets are called its I<body>.  With respect to the
+relational model of data, a I<heading> represents a predicate, for which
+each I<attribute name> is a free variable, and a C<Tuple> as a whole
+represents a derived proposition, where the corresponding attribute asset
+values substitute for the free variables; however, any actual predicate/etc
+is defined by the context of a C<Tuple> value and a C<Tuple> in isolation
+explicitly does not represent any proposition in particular.
+
+The canonical way to represent the concept of a I<tuple> that has ordered
+attributes is to use integral names; to be specific, the attribute name
+consisting of just the character codepoint 0 would mark the first ordered
+attribute, the name consisting of just the codepoint 1 would mark the
+second, and so on; this can be repeated up to 32 "positional" names whose
+names would correspond to non-printing Unicode codepoints and would
+alphabetically sort correctly and prior to any normal text-like attribute
+names like C<name> or C<age>; said first 32 would likewise be distinct in
+appearance from all regular printable numbers used as attribute names.
+
+Perl 6 has a direct C<Tuple> analogy which is provided by the Perl 6
+class C<Capture>.  This analogy extends to the fact that a primary purpose
+of both is to represent a collection of arguments for a routine.
+
+=head2 Heading
+
+I<TODO.>
+
+=head2 Tuple_Array
+
+I<TODO.>
+
+=head2 Relation
+
+I<TODO.>
+
+=head2 Tuple_Bag
+
+I<TODO.>
+
+=head2 Interval
+
+I<TODO.>
+
+Perl 6 has a direct C<Interval> analogy which is provided by the Perl 6
+class C<Range>.
+
+=head2 Capsule
+
+I<TODO.>
+
+=head2 Reference
+
+I<TODO.>
+
+Perl 6 has a direct C<Reference> analogy which is provided by the Perl 6
+class C<Scalar> in particular, but also the Perl 6 I<container> concept in
+general, of which the Perl 6 class C<Proxy> is another example.
+
+=head2 External
+
+An C<External> value is an opaque and transient reference to an entity that
+is defined and managed externally to the DBMS environment, either
+internally to the DBMS host implementation or in some peer language that it
+mediates.  The C<External> type is useful for when you want the DBMS to
+manage native Perl objects to the extent that it is capable of; the DBMS
+would treat each C<External> value as a black box to pass around, but not
+to operate on, except by means of special routines Perl provides to it.
+An C<External> value can in general only exist in the memory of the Perl 6
+application process using the B<MDCDBI>-implementing library.
+
+=head2 Excuse
+
+An C<Excuse> value is an explicitly stated reason for why, given some
+particular problem domain, a value is not being used that is ordinary for
+that domain.  For example, the typical integer division operation is not
+defined to give an integer result when the divisor is zero, and so a
+function for integer division could be defined to result in an C<Excuse>
+value rather than throw an exception in that case.  For another example, an
+C<Excuse> value could be used to declare that the information we are
+storing about a person is missing certain details and why those are
+missing, such as because the person left the birthdate field blank on their
+application form.  An C<Excuse> is isomorphic to an I<exception> but that
+use of the former is not meant to terminate execution of code early unlike
+the latter which is.
+
+Perl 6 has a direct C<Excuse> analogy which is provided by the Perl 6
+class C<Failure>.
+
+=head2 Excuse_No_Reason
+
+The singleton type value C<Excuse_No_Reason> represents the I<excuse> which
+simply says that an ordinary value for any given domain is missing and that
+there is simply no excuse that has been given for this; in other words,
+something has gone wrong without the slightest hint of an explanation.
+This is conceptually the most generic I<excuse> value there is and it can
+be used by lazy programmers as a fallback for when they don't have even a
+semblance of a better explanation for why an ordinary value is missing.
+
+Perl 6 has a direct C<Excuse_No_Reason> analogy which is provided by the
+Perl 6 class C<Nil>.
+
+For a B<MDCDBI>-implementing library that natively has a concept of
+3-valued logic, specifically a concept like such where the multiplicity of
+scenarios that may produce a special no-regular-value-is-here marker do in
+fact all produce the exact same marker, C<Excuse_No_Reason> is the official
+way to represent that marker.  This includes the I<null> of any common
+dialect of SQL.  Whereas, for DBMS libraries that distinguish the reasons
+for why a regular value may be missing, C<Excuse_No_Reason> should NOT be
+used and instead other more applicable I<excuse> values should instead.
+
+=head2 Excuse_Neg_Inf
+
+The singleton type value C<Excuse_Neg_Inf> represents the type-agnostic
+concept of negative infinity, an I<orderable> value that sorts I<before>
+all other values in the type system.  This value is also an I<excuse> that
+says the result of some operation is infinite in the negative direction.
+
+=head2 Excuse_Pos_Inf
+
+The singleton type value C<Excuse_Pos_Inf> represents the type-agnostic
+concept of positive infinity, an I<orderable> value that sorts I<after> all
+other values in the type system.  This value is also an I<excuse> that says
+the result of some operation is infinite in the positive direction.
+
+=head2 Excuse_Div_By_Zero
+
+The singleton type value C<Excuse_Div_By_Zero> represents the I<undefined>
+result of attempting to divide a simple number by a simple, unsigned,
+number zero.
+
+=head2 Excuse_Zero_To_The_Zero
+
+The singleton type value C<Excuse_Zero_To_The_Zero> represents the
+I<undefined> result of attempting to exponentiate a number zero to the
+power of a number zero.
+
+=head2 Excuse_No_Such_Index
+
+The singleton type value C<Excuse_No_Such_Index> represents the
+I<undefined> result of attempting to use a member index I<I> of
+C<Array>/etc value I<V> while assuming incorrectly that I<V> already has a
+member whose index is I<I>.
+
+Perl 6 has a direct C<Excuse_No_Such_Index> analogy which is provided by
+the Perl 6 class C<X::OutOfRange>.
+
+=head2 Excuse_No_Such_Attr_Name
+
+The singleton type value C<Excuse_No_Such_Attr_Name> represents the
+I<undefined> result of attempting to use an attribute named I<N> of
+C<Tuple>/etc value I<V> while assuming incorrectly that I<V> already has an
+attribute whose name is I<N>.
+
+=head2 Excuse_Not_Same_Heading
+
+The singleton type value C<Excuse_Not_Same_Heading> represents the
+I<undefined> result of attempting to perform an operation that takes 2
+C<Tuple>/etc inputs and requires them to have the same relational
+I<heading> but the actual 2 inputs have different headings.
+
+=head1 INTERFACE
+
+The interface of Muldis::DBI::Duck_Coupling::API is entirely
+object-oriented; you use it by creating objects from its member classes and
+then invoking methods on those objects.  All of their attributes are
+private, so you must use accessor methods.
+
+The canonical way to create every API object is to invoke a I<factory>
+method, typically on a prior-existing object, and rarely (exactly once in
+typical cases) on the name of a I<provider information class>.
+
+The usual way that Muldis::DBI::Duck_Coupling::API indicates a failure is
+to throw an exception; most often this is due to invalid input.  If an
+invoked routine simply returns, you can assume that it has succeeded, even
+if the return value is undefined.
+
+=head1 PACKAGES
+
+The Muldis::DBI::Duck_Coupling::API virtual library includes the following
+virtual Perl packages.  Other libraries that implement the B<Muldis Duck
+Coupling DBI> specification can choose to have a different count of
+packages; the important thing is that when one of the following methods is
+implemented, any objects created by those methods would have the methods of
+their own that they should have.
+
+=head2 Muldis::DBI::Duck_Coupling::API
+
+I<TODO.>
+
+=head2 Muldis::DBI::Duck_Coupling::API::Machine
+
+A C<Machine> object represents a single active instance of a database
+management system (DBMS) or virtual machine environment, which is the
+widest scope stateful context in which any other database activities
+happen.  Other activities meaning the creation or destruction or
+association or disassociation with one or more databases, the authoring or
+compilation or execution of routines, either to fetch data or manipulate
+data, the creation or destruction of database constraints, the management
+of transactions, and so on.  A C<Machine> object also represents the global
+memory pool of an active DBMS instance, within which all processes and
+values and variables live.
+
+A typical Perl application would use exactly one C<Machine> object at a
+time and it would tend to be as long-lived as the Perl process itself.
+Some libraries implementing B<MDCDBI> may treat a C<Machine> as a
+singleton, so only one such object may exist at a time through which it
+manages resources; other implementers may allow several at once, in which
+case they should be completely independent.
+
+=head2 Muldis::DBI::Duck_Coupling::API::Process
+
+A C<Process> object represents a single in-DBMS I<process>, which typically
+has its own autonomous transactional context.  It is associated with a
+specific C<Machine> object, the one whose C<new_process> method created it.
+A typical Perl application would use a distinct C<Process> object for each
+conceptually independent distinct instance of a DBMS "connection".
+
+=head2 Muldis::DBI::Duck_Coupling::API::Value
+
+A C<Value> object represents a single in-DBMS value or variable.  It is
+associated with a specific C<Machine> object, the one whose C<new_value>
+method created it, and sometimes also with a specific C<Process> object.
+C<Value> objects are the normal way to directly share or move data between
+the DBMS and main Perl environments.  The way to represent an in-DBMS
+variable with a C<Value> object is to use a I<value> whose I<data type> is
+C<Reference>.
+
+=head1 DIAGNOSTICS
+
+I<This documentation is pending.>
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+I<This documentation is pending.>
+
+=head1 DEPENDENCIES
+
+As of this time, any stable version of Perl 6 at all (language version
+C<6.c> from 2015 and up) is expected to be able to provide the necessary
+foundation for Perl 6 code that is able to speak the B<Muldis Duck Coupling
+DBI> API.  If this turns out not to be the case, the minimum required Perl
+6 version can be raised.
+
+=head1 INCOMPATIBILITIES
+
+I<This documentation is pending.>
+
+=head1 SEE ALSO
+
+Go to L<Muldis::DBI::Duck_Coupling> for the majority of both
+distribution-internal and external references.
+
+=head1 BUGS AND LIMITATIONS
+
+I<This documentation is pending.>
+
+=head1 AUTHOR
+
+Darren Duncan (C<darren@DarrenDuncan.net>)
+
+=head1 LICENSE AND COPYRIGHT
+
+This file is part of the formal specification of the the B<Muldis Duck
+Coupling DBI> (B<MDCDBI>) library API for Perl 6.
+
+MDCDBI is Copyright © 2002-2016, Muldis Data Systems, Inc.
+
+See the LICENSE AND COPYRIGHT of L<Muldis::DBI::Duck_Coupling> for details.
+
+=head1 ACKNOWLEDGEMENTS
+
+See the ACKNOWLEDGEMENTS of L<Muldis::DBI::Duck_Coupling> for details.
+
+=head1 FORUMS
+
+See the FORUMS of L<Muldis::DBI::Duck_Coupling> for details.
+
+=cut

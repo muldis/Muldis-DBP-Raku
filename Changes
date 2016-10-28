@@ -14,6 +14,8 @@
     * This is the Muldis-DBI-Duck_Coupling-0.1.0.-9 file manifest:
 
         Changes
+        lib/Muldis/DBI/Duck_Coupling.pod
+        lib/Muldis/DBI/Duck_Coupling/API.pod
         LICENSE/artistic-2_0.txt
         Makefile.PL
         MANIFEST
