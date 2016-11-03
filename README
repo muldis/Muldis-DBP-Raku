@@ -7,3 +7,10 @@ by Darren Duncan <darren@DarrenDuncan.net>
 This distribution features the pure documentation file named
 Muldis::DBI::Duck_Coupling (Formal spec of a duck-coupling database
 interface for Perl 6) and its support structure.
+
+Muldis::DBI::Duck_Coupling has 2 co-developed versions, for Perl 5 and Perl
+6 respectively, and which are distributed separately from each other.  But
+while the 2 versions would be similar, they are explicitly not intended to
+be drop-in substitutable for each other, as each would have some
+differences that optimizes it for its host language.  Similarly, analogous
+specifications will be written over time for other, non-Perl, languages.
