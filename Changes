@@ -1,21 +1,21 @@
-                        Muldis::DBI::Duck_Coupling
+                                Muldis::DBP
                                   Changes
 ---------------------------------------------------------------------------
 
-2016-10-xx
+2016-12-xx
 
-    * Muldis::DBI::Duck_Coupling version 0.1.0.-9 is released on CPAN as
-    Muldis-DBI-Duck_Coupling-0.001000_1.tar.gz.
+    * Muldis::DBP version 0.1.0.-9 is released on CPAN as
+    Muldis-DBP-0.001000_1.tar.gz.
 
-    * This is the first release of the Perl 6 Muldis::DBI::Duck_Coupling
+    * This is the first release of the Perl 6 Muldis::DBP
     distribution, and the first release of any distribution to contain a
-    Perl 6 POD file named Muldis::DBI::Duck_Coupling.
+    Perl 6 POD file named Muldis::DBP.
 
-    * This is the Muldis-DBI-Duck_Coupling-0.1.0.-9 file manifest:
+    * This is the Muldis-DBP-0.1.0.-9 file manifest:
 
         Changes
-        lib/Muldis/DBI/Duck_Coupling.pod
-        lib/Muldis/DBI/Duck_Coupling/API.pod
+        lib/Muldis/DBP.pod
+        lib/Muldis/DBP/API.pod
         LICENSE/artistic-2_0.txt
         Makefile.PL
         MANIFEST

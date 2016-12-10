@@ -1,6 +1,6 @@
 Changes
-lib/Muldis/DBI/Duck_Coupling.pod
-lib/Muldis/DBI/Duck_Coupling/API.pod
+lib/Muldis/DBP.pod
+lib/Muldis/DBP/API.pod
 LICENSE/artistic-2_0.txt
 Makefile.PL
 MANIFEST
