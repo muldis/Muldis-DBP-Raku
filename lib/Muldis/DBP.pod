@@ -122,7 +122,15 @@ I<Further notes are TODO.>
 
 =head1 ACKNOWLEDGEMENTS
 
-None yet.
+=over
+
+=item Brock Wilcox (C<awwaiid@thelackthereof.org>)
+
+On 2016.12.08, suggested a new list of candidate names for this project
+such that one of those, B<DBP> for I<DataBase Protocol>, was adopted as of
+2016.12.09 for this project's working name, prefixed with B<Muldis>.
+
+=back
 
 =head1 FORUMS
 
