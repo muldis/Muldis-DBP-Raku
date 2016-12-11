@@ -400,19 +400,23 @@ dialect of SQL.  Whereas, for DBMS libraries that distinguish the reasons
 for why a regular value may be missing, C<Excuse_No_Reason> should NOT be
 used and instead other more applicable I<excuse> values should instead.
 
-=head2 Excuse_Neg_Inf
+=head2 Excuse_Before_All_Others
 
-The singleton type value C<Excuse_Neg_Inf> represents the type-agnostic
-concept of negative infinity, an I<orderable> value that sorts I<before>
-all other values in the type system.  This value is also an I<excuse> that
-says the result of some operation is infinite in the negative direction.
+The singleton type value C<Excuse_Before_All_Others> represents a
+type-agnostic analogy of negative infinity, an I<orderable> value that
+sorts I<before> all other values in the type system, and that is its only
+meaning.  This value is expressly I<not> meant to represent any specific
+mathematical or physical concept of I<infinity> or I<∞>, including those of
+the IEEE floating-point standards; such things should be defined separately.
 
-=head2 Excuse_Pos_Inf
+=head2 Excuse_After_All_Others
 
-The singleton type value C<Excuse_Pos_Inf> represents the type-agnostic
-concept of positive infinity, an I<orderable> value that sorts I<after> all
-other values in the type system.  This value is also an I<excuse> that says
-the result of some operation is infinite in the positive direction.
+The singleton type value C<Excuse_After_All_Others> represents a
+type-agnostic analogy of positive infinity, an I<orderable> value that
+sorts I<after> all other values in the type system, and that is its only
+meaning.  This value is expressly I<not> meant to represent any specific
+mathematical or physical concept of I<infinity> or I<∞>, including those of
+the IEEE floating-point standards; such things should be defined separately.
 
 =head2 Excuse_Div_By_Zero
 
