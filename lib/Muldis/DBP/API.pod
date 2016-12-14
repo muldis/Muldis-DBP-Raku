@@ -250,10 +250,10 @@ An C<Array> value is a general purpose arbitrarily-long ordered sequence of
 any other, I<member> values, which explicitly does not represent any kind
 of thing in particular, and is simply the sum of its members.  An C<Array>
 value is dense; iff it has any members, then its first-ordered member is at
-index position C<0>, and its last-indexed member is at the index position
+ordinal position C<0>, and its last-ordinal-positioned member is at the ordinal position
 that is one less than the count of its members.  An C<Array> in the general
 case may have multiple members that are the same value, and any duplicates
-may or may not exist at consecutive indexes.
+may or may not exist at consecutive ordinal positions.
 
 Perl 6 has a direct C<Array> analogy which is provided by the Perl 6
 class C<List>.
@@ -430,14 +430,14 @@ The singleton type value C<Excuse_Zero_To_The_Zero> represents the
 I<undefined> result of attempting to exponentiate a number zero to the
 power of a number zero.
 
-=head2 Excuse_No_Such_Index
+=head2 Excuse_No_Such_Ord_Pos
 
-The singleton type value C<Excuse_No_Such_Index> represents the
-I<undefined> result of attempting to use a member index I<I> of
+The singleton type value C<Excuse_No_Such_Ord_Pos> represents the
+I<undefined> result of attempting to use a member ordinal position I<P> of
 C<Array>/etc value I<V> while assuming incorrectly that I<V> already has a
-member whose index is I<I>.
+member whose ordinal position is I<P>.
 
-Perl 6 has a direct C<Excuse_No_Such_Index> analogy which is provided by
+Perl 6 has a direct C<Excuse_No_Such_Ord_Pos> analogy which is provided by
 the Perl 6 class C<X::OutOfRange>.
 
 =head2 Excuse_No_Such_Attr_Name
