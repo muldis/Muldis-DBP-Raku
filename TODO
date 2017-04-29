@@ -5,3 +5,7 @@
 Following is a summary of things that still need doing.
 
 * Whatever else needs doing, such as, fixing bugs.
+
+* For security reasons, any DBP provider that supports loading support
+modules from the file system, such as Muldis D packages, should explicitly
+not allow "." / the CWD as a search directory, following Perl 5's example.

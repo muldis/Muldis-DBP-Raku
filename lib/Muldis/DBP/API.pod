@@ -57,7 +57,8 @@ the same value.  Every conceivable distinct concept can be represented by a
 value, whether it is a simple number or an arbitrarily complex collection.
 For every value there exists at least one I<selector> by means of which
 that value may manifest within a program; each selector takes the form of
-either a function or a value literal syntax.
+either a function or a value literal syntax.  A value's fundamental
+identity is itself, and does not vary with any labels applied to it.
 
 =head2 variable
 
@@ -66,19 +67,20 @@ unique nor eternal nor immutable in the typical case; it does have an
 address and in the typical case can be updated, meaning that over time a
 variable may hold appearances of different values.  A variable can be
 created, destroyed, copied, and mutated.  A variable's fundamental identity
-is its address, its identity does not vary with what value appears there.
+is its address, its identity does not vary with what value appears there
+nor with any labels applied to its address.
 
 =head2 function
 
-A I<function> is a set of instructions for mapping a set of input values,
-its I<domain>, to a set of output values, its I<codomain>, in a pure and
-deterministic manner.  The I<result> value of a function call is determined
-entirely by its input I<source> value, and a function is guaranteed to give
-exactly the same single result value for every call with the same source
-value.  A I<function> is more constrained than a mathematical function
-(that it otherwise resembles) such that its input I<source> may only be a
-I<tuple> (a value of the C<Tuple> type) and not some other value.  This is
-for the purpose of avoiding unnecessary complications.
+A I<function> is a set of instructions for mapping a set of input I<source>
+values, its I<domain>, to a set of output I<result> values, its
+I<codomain>, in a pure and deterministic manner.  The result value of a
+function call is determined entirely by its source value, and a function is
+guaranteed to give exactly the same single result value for every call with
+the same source value.  A I<function> is more constrained than a
+mathematical function (that it otherwise resembles) such that its I<source>
+may only be a I<tuple> (a value of the C<Tuple> type) and not some other
+value.  This is for the purpose of avoiding unnecessary complications.
 
 =head2 procedure
 
@@ -88,16 +90,17 @@ from or writing to the external environment of the application, including
 its users or various external systems.  Any typical interaction with a DBMS
 by a Perl application would be mediated by at least one I<procedure>.
 
-=head2 data type
+=head2 type
 
-A I<data type>, typically abbreviated I<type>, is fundamentally an
-unordered set (or just I<set>) of values, nothing more and nothing less.
-If and only if 2 sets of values are the same unordered set, they are the
-same type.  Analogous to how values are conceived, every type is unique,
-eternal, immutable, has no address and can not be updated.  Note that the
-concept of a I<type> as an unordered set of values is distinct from the
-concept of a I<value> which is an unordered set of values; no type I<is> a
-value, even though a set value is indeed isomorphic to a type.
+A I<type> aka I<data type> is characterized by an unordered set (or just
+I<set>) of values, nothing more and nothing less.  A type's fundamental
+identity is the set of values that characterizes it, and that identity does
+not vary with any labels applied to that set.  If and only if 2 sets of
+values are the same unordered set, they characterize the same type.
+Analogous to how values are conceived, every type is unique, eternal,
+immutable, has no address and can not be updated.  Types are not values and
+values are not types, and this is despite the fact that some values (such
+as relations) are also characterized by unordered sets of other values.
 
 =head2 singleton type
 
@@ -126,7 +129,7 @@ A I<class> (unqualified) is a Perl 6 class; this concept does not exist
 inside a DBMS virtual machine in the general case spoken to by this
 document; this term is only used outside the DBMS, in regular Perl 6 space.
 
-=head1 DATA TYPES
+=head1 TYPES
 
 The B<Muldis DBP> (B<MDBP>) library API for Perl 6 formally
 defines a set of I<data types> that all I<values>, being either used within
@@ -340,11 +343,15 @@ class C<Range>.
 
 I<TODO.>
 
-=head2 Reference
+=head2 Handle
 
 I<TODO.>
 
-Perl 6 has a direct C<Reference> analogy which is provided by the Perl 6
+=head2 Variable
+
+I<TODO.>
+
+Perl 6 has a direct C<Variable> analogy which is provided by the Perl 6
 class C<Scalar> in particular, but also the Perl 6 I<container> concept in
 general, of which the Perl 6 class C<Proxy> is another example.
 
@@ -375,8 +382,11 @@ application form.  An C<Excuse> is isomorphic to an I<exception> but that
 use of the former is not meant to terminate execution of code early unlike
 the latter which is.
 
-Perl 6 has a direct C<Excuse> analogy which is provided by the Perl 6
-class C<Failure>.
+Perl 6 has a direct C<Excuse> analogy which is provided by the Perl 6 class
+C<Failure>.
+
+Also of note, C<X::AdHoc> is the Perl 6 type into which objects are wrapped
+if they are thrown as exceptions, but don't inherit from C<Exception>.
 
 =head2 Excuse_No_Reason
 
@@ -519,7 +529,7 @@ method created it, and sometimes also with a specific C<Process> object.
 C<Value> objects are the normal way to directly share or move data between
 the DBMS and main Perl environments.  The way to represent an in-DBMS
 variable with a C<Value> object is to use a I<value> whose I<data type> is
-C<Reference>.
+C<Variable>.
 
 =head1 DIAGNOSTICS
 
@@ -559,7 +569,7 @@ Darren Duncan (C<darren@DarrenDuncan.net>)
 This file is part of the formal specification of the the B<Muldis DBP>
 (B<MDBP>) library API for Perl 6.
 
-MDBP is Copyright © 2002-2016, Muldis Data Systems, Inc.
+MDBP is Copyright © 2002-2017, Muldis Data Systems, Inc.
 
 See the LICENSE AND COPYRIGHT of L<Muldis::DBP> for details.
 
